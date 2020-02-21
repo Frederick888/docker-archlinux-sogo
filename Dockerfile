@@ -1,6 +1,6 @@
 FROM archlinux:latest
 
-RUN pacman --noconfirm -Syu && pacman --noconfirm -S base-devel git && rm -rf /var/cache/pacman/pkg
+RUN pacman --noconfirm -Syu && pacman --noconfirm -S base-devel git supervisor && rm -rf /var/cache/pacman/pkg
 RUN sed 's/^# \(%wheel.*NOPASSWD.*\)/\1/' -i /etc/sudoers
 RUN useradd -r build -G wheel
 
