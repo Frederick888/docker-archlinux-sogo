@@ -1,6 +1,6 @@
 FROM archlinux:latest
 
-RUN pacman --noconfirm -Syu && pacman --noconfirm -S base-devel git supervisor && rm -rf /var/cache/pacman/pkg
+RUN pacman --noconfirm -Syu && pacman --noconfirm -S base-devel git supervisor apache && rm -rf /var/cache/pacman/pkg
 RUN sed 's/^# \(%wheel.*NOPASSWD.*\)/\1/' -i /etc/sudoers
 RUN useradd -r build -G wheel
 
@@ -24,9 +24,15 @@ RUN chown -R build ./sogo
 WORKDIR /build/sogo
 RUN sudo -u build makepkg -is --noconfirm && rm -rf /var/cache/pacman/pkg /build/sogo
 
+RUN sed 's/^Listen .*/Listen 20001/' -i /etc/httpd/conf/httpd.conf
+RUN sed 's/^#\(LoadModule .*\/mod_proxy\.so\)/\1/' -i /etc/httpd/conf/httpd.conf
+RUN sed 's/^#\(LoadModule .*\/mod_headers\.so\)/\1/' -i /etc/httpd/conf/httpd.conf
+RUN printf 'Include conf/extra/SOGo.conf\n' | tee -a /etc/httpd/conf/httpd.conf
+
 RUN mkdir /var/run/sogo && chown sogo:sogo /var/run/sogo
 ADD sogod.ini /etc/supervisor.d/sogod.ini
+ADD apache.ini /etc/supervisor.d/apache.ini
 
 WORKDIR /
 CMD ["/usr/sbin/supervisord", "--nodaemon"]
-EXPOSE 20000
+EXPOSE 20000 20001
