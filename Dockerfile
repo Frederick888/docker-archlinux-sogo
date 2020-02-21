@@ -24,6 +24,7 @@ RUN chown -R build ./sogo
 WORKDIR /build/sogo
 RUN sudo -u build makepkg -is --noconfirm && rm -rf /var/cache/pacman/pkg /build/sogo
 
+RUN mkdir /var/run/sogo && chown sogo:sogo /var/run/sogo
 ADD sogod.ini /etc/supervisor.d/sogod.ini
 
 WORKDIR /
