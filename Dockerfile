@@ -35,6 +35,7 @@ RUN sed 's/^#\(LoadModule .*\/mod_headers\.so\)/\1/' -i /etc/httpd/conf/httpd.co
 RUN printf 'Include conf/extra/SOGo.conf\n' | tee -a /etc/httpd/conf/httpd.conf
 
 RUN mkdir /var/run/sogo && chown sogo:sogo /var/run/sogo
+RUN mkdir /var/spool/sogo && chown sogo:sogo /var/spool/sogo
 ADD sogod.ini /etc/supervisor.d/sogod.ini
 ADD apache.ini /etc/supervisor.d/apache.ini
 
