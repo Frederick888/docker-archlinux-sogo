@@ -1,0 +1,15 @@
+diff --git a/PKGBUILD b/PKGBUILD
+index 1323b51..cbe223a 100644
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -10,9 +10,9 @@ arch=('x86_64')
+ url="http://www.sogo.nu/files/downloads/SOGo/Sources/"
+ license=('GPL')
+ options=('!strip')
+ replaces=('sope2')
+-depends=('gnustep-base<=1.26.0')
++depends=('gnustep-base')
+ makedepends=('gcc-objc'
+              'gnustep-make'
+              'libxml2'
+              'libmariadbclient'
