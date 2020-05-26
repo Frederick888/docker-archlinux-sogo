@@ -1,6 +1,6 @@
 FROM archlinux:latest
 
-RUN pacman --noconfirm -Syu && pacman --noconfirm -S base-devel git supervisor apache zip curl && rm -rf /var/cache/pacman/pkg
+RUN pacman --noconfirm --needed -Syu && pacman --noconfirm --needed -S base-devel git supervisor apache zip && yes | pacman -Sccq
 RUN sed 's/^# \(%wheel.*NOPASSWD.*\)/\1/' -i /etc/sudoers
 RUN useradd -r build -G wheel
 
@@ -10,7 +10,7 @@ WORKDIR /build
 RUN git clone --depth 1 https://aur.archlinux.org/libwbxml.git
 RUN chown -R build ./libwbxml
 WORKDIR /build/libwbxml
-RUN sudo -u build makepkg -is --noconfirm && rm -rf /var/cache/pacman/pkg /build/libwbxml
+RUN sudo -u build makepkg -is --noconfirm && rm -rf /build/libwbxml && yes | pacman -Sccq
 
 WORKDIR /build
 RUN git clone --depth 1 https://aur.archlinux.org/sope.git
@@ -18,7 +18,7 @@ ADD sope-4.3.2-1.patch /build/
 RUN git -C ./sope apply "../sope-4.3.2-1.patch"
 RUN chown -R build ./sope
 WORKDIR /build/sope
-RUN sudo -u build makepkg -is --noconfirm && rm -rf /var/cache/pacman/pkg /build/sope
+RUN sudo -u build makepkg -is --noconfirm && rm -rf /build/sope && yes | pacman -Sccq
 
 WORKDIR /build
 RUN git clone --depth 1 https://aur.archlinux.org/sogo.git
@@ -26,7 +26,7 @@ ADD sogo-4.3.2-1.patch /build/
 RUN git -C ./sogo apply "../sogo-4.3.2-1.patch"
 RUN chown -R build ./sogo
 WORKDIR /build/sogo
-RUN sudo -u build makepkg -is --noconfirm && rm -rf /var/cache/pacman/pkg /build/sogo
+RUN sudo -u build makepkg -is --noconfirm && rm -rf /build/sogo && yes | pacman -Sccq
 
 RUN sed 's/^Listen .*/Listen 20001/' -i /etc/httpd/conf/httpd.conf
 RUN sed 's|^ErrorLog.*|ErrorLog /dev/stderr|' -i /etc/httpd/conf/httpd.conf
