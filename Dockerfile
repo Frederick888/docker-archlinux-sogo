@@ -16,16 +16,12 @@ RUN sudo -u build makepkg -is --noconfirm && rm -rf /build/libwbxml && yes | pac
 
 WORKDIR /build
 RUN git clone --depth 1 https://aur.archlinux.org/sope.git
-ADD sope-4.3.2-1.patch /build/
-RUN git -C ./sope apply "../sope-4.3.2-1.patch"
 RUN chown -R build ./sope
 WORKDIR /build/sope
 RUN sudo -u build makepkg -is --noconfirm && rm -rf /build/sope && yes | pacman -Sccq
 
 WORKDIR /build
 RUN git clone --depth 1 https://aur.archlinux.org/sogo.git
-ADD sogo-4.3.2-1.patch /build/
-RUN git -C ./sogo apply "../sogo-4.3.2-1.patch"
 RUN chown -R build ./sogo
 WORKDIR /build/sogo
 RUN sudo -u build makepkg -is --noconfirm && rm -rf /build/sogo && yes | pacman -Sccq
