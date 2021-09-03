@@ -1,6 +1,6 @@
 FROM archlinux:latest
 
-RUN pacman --noconfirm --needed -Syu && pacman --noconfirm --needed -S base-devel git supervisor apache zip inetutils libsodium libzip && yes | pacman -Sccq
+RUN pacman --noconfirm --needed -Syu && pacman --noconfirm --needed -S base-devel git supervisor apache zip inetutils libsodium libzip libytnef && yes | pacman -Sccq
 RUN sed 's/^# \(%wheel.*NOPASSWD.*\)/\1/' -i /etc/sudoers
 RUN useradd -r build -G wheel
 
