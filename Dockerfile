@@ -6,6 +6,11 @@ RUN useradd -r build -G wheel
 
 RUN mkdir /build
 
+COPY ./gnustep-base /build/gnustep-base
+RUN chown -R build /build/gnustep-base
+WORKDIR /build/gnustep-base
+RUN sudo -u build makepkg -is --noconfirm && rm -rf /build/gnustep-base && yes | pacman -Sccq
+
 WORKDIR /build
 RUN git clone --depth 1 https://aur.archlinux.org/libwbxml.git
 RUN chown -R build ./libwbxml
