@@ -19,5 +19,5 @@ docker run -d --name sogo --restart always --network host \
 ...however it may raise some security concerns.
 
 ### Credits
-https://aur.archlinux.org/packages/sogo/
-https://aur.archlinux.org/packages/sope/
+https://aur.archlinux.org/packages/sogo/  
+https://aur.archlinux.org/packages/sope/  
