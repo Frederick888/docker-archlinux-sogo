@@ -3,6 +3,8 @@
 ### Usage
 ```sh
 docker run -d --name sogo --restart always \
+    --publish 127.0.0.1:20000:20000 \
+    --publish 127.0.0.1:20001:20001 \
     -v /srv/sogo:/etc/sogo \
     frederickzh/archlinux-sogo:latest
 ```
