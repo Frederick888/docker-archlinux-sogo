@@ -35,6 +35,9 @@ RUN sed 's/^#\(LoadModule .*\/mod_proxy_balancer\.so\)/\1/' -i /etc/httpd/conf/h
 RUN sed 's/^#\(LoadModule .*\/mod_headers\.so\)/\1/' -i /etc/httpd/conf/httpd.conf
 RUN printf 'Include conf/extra/SOGo.conf\n' | tee -a /etc/httpd/conf/httpd.conf
 
+ADD event_listener.ini /etc/supervisor.d/event_listener.ini
+ADD event_listener.sh /usr/local/bin/event_listener.sh
+RUN chmod +x /usr/local/bin/event_listener.sh
 RUN mkdir /var/run/sogo && chown sogo:sogo /var/run/sogo
 RUN mkdir /var/spool/sogo && chown sogo:sogo /var/spool/sogo
 ADD sogod.ini /etc/supervisor.d/sogod.ini
