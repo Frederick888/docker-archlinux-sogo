@@ -27,15 +27,15 @@ RUN sudo -u build makepkg -is --noconfirm && rm -rf /build/sogo && yes | pacman 
 
 
 COPY httpd.conf /etc/httpd/conf/httpd.conf
-ADD event_listener.ini /etc/supervisor.d/event_listener.ini
-ADD event_listener.sh /usr/local/bin/event_listener.sh
+COPY event_listener.ini /etc/supervisor.d/event_listener.ini
+COPY event_listener.sh /usr/local/bin/event_listener.sh
 RUN chmod +x /usr/local/bin/event_listener.sh
 RUN mkdir /var/run/sogo && chown sogo:sogo /var/run/sogo
 RUN mkdir /var/spool/sogo && chown sogo:sogo /var/spool/sogo
-ADD sogod.ini /etc/supervisor.d/sogod.ini
-ADD apache.ini /etc/supervisor.d/apache.ini
-ADD cronie.ini /etc/supervisor.d/cronie.ini
-ADD memcached.ini /etc/supervisor.d/memcached.ini
+COPY sogod.ini /etc/supervisor.d/sogod.ini
+COPY apache.ini /etc/supervisor.d/apache.ini
+COPY cronie.ini /etc/supervisor.d/cronie.ini
+COPY memcached.ini /etc/supervisor.d/memcached.ini
 
 WORKDIR /
 CMD ["/usr/sbin/supervisord", "--nodaemon"]
