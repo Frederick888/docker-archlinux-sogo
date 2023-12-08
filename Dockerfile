@@ -1,5 +1,5 @@
 FROM archlinux:latest
-
+ENV LD_PRELOAD=/usr/lib/libytnef.so
 RUN pacman --noconfirm --needed -Syu && pacman --noconfirm --needed -S base-devel git supervisor apache zip inetutils libsodium libzip libytnef cronie && yes | pacman -Sccq
 RUN sed 's/.*MAKEFLAGS=.*/MAKEFLAGS="-j$(nproc)"/' -i /etc/makepkg.conf
 RUN sed 's/^# \(%wheel.*NOPASSWD.*\)/\1/' -i /etc/sudoers
@@ -36,6 +36,11 @@ COPY sogod.ini /etc/supervisor.d/sogod.ini
 COPY apache.ini /etc/supervisor.d/apache.ini
 COPY cronie.ini /etc/supervisor.d/cronie.ini
 COPY memcached.ini /etc/supervisor.d/memcached.ini
+
+# clean up
+RUN pacman --noconfirm -Rcns base-devel git && yes | pacman -Sccq
+RUN rm -rf /tmp/* /var/tmp/* /var/cache/pacman/pkg/*
+
 
 WORKDIR /
 CMD ["/usr/sbin/supervisord", "--nodaemon"]
