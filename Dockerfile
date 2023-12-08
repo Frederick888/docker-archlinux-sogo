@@ -25,16 +25,8 @@ RUN chown -R build ./sogo
 WORKDIR /build/sogo
 RUN sudo -u build makepkg -is --noconfirm && rm -rf /build/sogo && yes | pacman -Sccq
 
-RUN sed 's/^Listen .*/Listen 20001/' -i /etc/httpd/conf/httpd.conf
-RUN sed 's|^ErrorLog.*|ErrorLog /dev/stderr|' -i /etc/httpd/conf/httpd.conf
-RUN sed 's/^#\(LoadModule .*\/mod_rewrite\.so\)/\1/' -i /etc/httpd/conf/httpd.conf
-RUN sed 's/^#\(LoadModule .*\/mod_proxy\.so\)/\1/' -i /etc/httpd/conf/httpd.conf
-RUN sed 's/^#\(LoadModule .*\/mod_proxy_http\.so\)/\1/' -i /etc/httpd/conf/httpd.conf
-RUN sed 's/^#\(LoadModule .*\/mod_proxy_http2\.so\)/\1/' -i /etc/httpd/conf/httpd.conf
-RUN sed 's/^#\(LoadModule .*\/mod_proxy_balancer\.so\)/\1/' -i /etc/httpd/conf/httpd.conf
-RUN sed 's/^#\(LoadModule .*\/mod_headers\.so\)/\1/' -i /etc/httpd/conf/httpd.conf
-RUN printf 'Include conf/extra/SOGo.conf\n' | tee -a /etc/httpd/conf/httpd.conf
 
+COPY httpd.conf /etc/httpd/conf/httpd.conf
 ADD event_listener.ini /etc/supervisor.d/event_listener.ini
 ADD event_listener.sh /usr/local/bin/event_listener.sh
 RUN chmod +x /usr/local/bin/event_listener.sh
