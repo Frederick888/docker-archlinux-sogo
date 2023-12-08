@@ -44,6 +44,9 @@ ADD sogod.ini /etc/supervisor.d/sogod.ini
 ADD apache.ini /etc/supervisor.d/apache.ini
 ADD cronie.ini /etc/supervisor.d/cronie.ini
 ADD memcached.ini /etc/supervisor.d/memcached.ini
+# clean up
+RUN pacman --noconfirm -Rcns base-devel git && yes | pacman -Sccq
+RUN rm -rf /tmp/* /var/tmp/* /var/cache/pacman/pkg/*
 
 WORKDIR /
 CMD ["/usr/sbin/supervisord", "--nodaemon"]
