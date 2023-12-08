@@ -43,6 +43,7 @@ RUN mkdir /var/spool/sogo && chown sogo:sogo /var/spool/sogo
 ADD sogod.ini /etc/supervisor.d/sogod.ini
 ADD apache.ini /etc/supervisor.d/apache.ini
 ADD cronie.ini /etc/supervisor.d/cronie.ini
+ADD memcached.ini /etc/supervisor.d/memcached.ini
 
 WORKDIR /
 CMD ["/usr/sbin/supervisord", "--nodaemon"]
