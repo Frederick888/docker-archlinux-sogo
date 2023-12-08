@@ -1,6 +1,6 @@
 FROM archlinux:latest
 
-RUN pacman --noconfirm --needed -Syu && pacman --noconfirm --needed -S base-devel git supervisor apache zip inetutils libsodium libzip libytnef && yes | pacman -Sccq
+RUN pacman --noconfirm --needed -Syu && pacman --noconfirm --needed -S base-devel git supervisor apache zip inetutils libsodium libzip libytnef cronie && yes | pacman -Sccq
 RUN sed 's/.*MAKEFLAGS=.*/MAKEFLAGS="-j$(nproc)"/' -i /etc/makepkg.conf
 RUN sed 's/^# \(%wheel.*NOPASSWD.*\)/\1/' -i /etc/sudoers
 RUN useradd -r build -G wheel
@@ -42,6 +42,7 @@ RUN mkdir /var/run/sogo && chown sogo:sogo /var/run/sogo
 RUN mkdir /var/spool/sogo && chown sogo:sogo /var/spool/sogo
 ADD sogod.ini /etc/supervisor.d/sogod.ini
 ADD apache.ini /etc/supervisor.d/apache.ini
+ADD cronie.ini /etc/supervisor.d/cronie.ini
 
 WORKDIR /
 CMD ["/usr/sbin/supervisord", "--nodaemon"]
