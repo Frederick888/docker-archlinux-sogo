@@ -25,28 +25,22 @@ RUN chown -R build ./sogo
 WORKDIR /build/sogo
 RUN sudo -u build makepkg -is --noconfirm && rm -rf /build/sogo && yes | pacman -Sccq
 
-RUN sed 's/^Listen .*/Listen 20001/' -i /etc/httpd/conf/httpd.conf
-RUN sed 's|^ErrorLog.*|ErrorLog /dev/stderr|' -i /etc/httpd/conf/httpd.conf
-RUN sed 's/^#\(LoadModule .*\/mod_rewrite\.so\)/\1/' -i /etc/httpd/conf/httpd.conf
-RUN sed 's/^#\(LoadModule .*\/mod_proxy\.so\)/\1/' -i /etc/httpd/conf/httpd.conf
-RUN sed 's/^#\(LoadModule .*\/mod_proxy_http\.so\)/\1/' -i /etc/httpd/conf/httpd.conf
-RUN sed 's/^#\(LoadModule .*\/mod_proxy_http2\.so\)/\1/' -i /etc/httpd/conf/httpd.conf
-RUN sed 's/^#\(LoadModule .*\/mod_proxy_balancer\.so\)/\1/' -i /etc/httpd/conf/httpd.conf
-RUN sed 's/^#\(LoadModule .*\/mod_headers\.so\)/\1/' -i /etc/httpd/conf/httpd.conf
-RUN printf 'Include conf/extra/SOGo.conf\n' | tee -a /etc/httpd/conf/httpd.conf
 
-ADD event_listener.ini /etc/supervisor.d/event_listener.ini
-ADD event_listener.sh /usr/local/bin/event_listener.sh
+COPY httpd.conf /etc/httpd/conf/httpd.conf
+COPY event_listener.ini /etc/supervisor.d/event_listener.ini
+COPY event_listener.sh /usr/local/bin/event_listener.sh
 RUN chmod +x /usr/local/bin/event_listener.sh
 RUN mkdir /var/run/sogo && chown sogo:sogo /var/run/sogo
 RUN mkdir /var/spool/sogo && chown sogo:sogo /var/spool/sogo
-ADD sogod.ini /etc/supervisor.d/sogod.ini
-ADD apache.ini /etc/supervisor.d/apache.ini
-ADD cronie.ini /etc/supervisor.d/cronie.ini
-ADD memcached.ini /etc/supervisor.d/memcached.ini
+COPY sogod.ini /etc/supervisor.d/sogod.ini
+COPY apache.ini /etc/supervisor.d/apache.ini
+COPY cronie.ini /etc/supervisor.d/cronie.ini
+COPY memcached.ini /etc/supervisor.d/memcached.ini
+
 # clean up
 RUN pacman --noconfirm -Rcns base-devel git && yes | pacman -Sccq
 RUN rm -rf /tmp/* /var/tmp/* /var/cache/pacman/pkg/*
+
 
 WORKDIR /
 CMD ["/usr/sbin/supervisord", "--nodaemon"]
