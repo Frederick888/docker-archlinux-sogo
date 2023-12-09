@@ -1,27 +1,20 @@
 FROM archlinux:latest
 ENV LD_PRELOAD=/usr/lib/libytnef.so
-RUN pacman --noconfirm --needed -Syu && pacman --noconfirm --needed -S base-devel git supervisor apache zip inetutils libsodium libzip libytnef cronie && yes | pacman -Sccq
-RUN sed 's/.*MAKEFLAGS=.*/MAKEFLAGS="-j$(nproc)"/' -i /etc/makepkg.conf
-RUN sed 's/^# \(%wheel.*NOPASSWD.*\)/\1/' -i /etc/sudoers
-RUN useradd -r build -G wheel
-
-RUN mkdir /build
+RUN pacman --noconfirm --needed -Syu && pacman --noconfirm --needed -S base-devel git supervisor apache zip inetutils libsodium libzip libytnef cronie && yes | pacman -Sccq && \
+  sed 's/.*MAKEFLAGS=.*/MAKEFLAGS="-j$(nproc)"/' -i /etc/makepkg.conf && sed 's/^# \(%wheel.*NOPASSWD.*\)/\1/' -i /etc/sudoers && useradd -r build -G wheel &&  mkdir /build
 
 WORKDIR /build
-RUN git clone --depth 1 https://aur.archlinux.org/libwbxml.git
-RUN chown -R build ./libwbxml
+RUN git clone --depth 1 https://aur.archlinux.org/libwbxml.git && chown -R build ./libwbxml 
 WORKDIR /build/libwbxml
 RUN sudo -u build makepkg -is --noconfirm && rm -rf /build/libwbxml && yes | pacman -Sccq
 
 WORKDIR /build
-RUN git clone --depth 1 https://aur.archlinux.org/sope.git
-RUN chown -R build ./sope
+RUN git clone --depth 1 https://aur.archlinux.org/sope.git &&  chown -R build ./sope
 WORKDIR /build/sope
 RUN sudo -u build makepkg -is --noconfirm && rm -rf /build/sope && yes | pacman -Sccq
 
 WORKDIR /build
-RUN git clone --depth 1 https://aur.archlinux.org/sogo.git
-RUN chown -R build ./sogo
+RUN git clone --depth 1 https://aur.archlinux.org/sogo.git &&  chown -R build ./sogo
 WORKDIR /build/sogo
 RUN sudo -u build makepkg -is --noconfirm && rm -rf /build/sogo && yes | pacman -Sccq
 
@@ -38,8 +31,7 @@ COPY cronie.ini /etc/supervisor.d/cronie.ini
 COPY memcached.ini /etc/supervisor.d/memcached.ini
 
 # clean up
-RUN pacman --noconfirm -Rcns base-devel git && yes | pacman -Sccq
-RUN rm -rf /tmp/* /var/tmp/* /var/cache/pacman/pkg/*
+RUN pacman --noconfirm -Rcns base-devel git && yes | pacman -Sccq && rm -rf /tmp/* /var/tmp/* /var/cache/pacman/pkg/*
 
 
 WORKDIR /
