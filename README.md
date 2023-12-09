@@ -318,3 +318,10 @@ ProxyPass /SOGo http://127.0.0.1:20000/SOGo retry=0 nocanon
 #   - make sure to set the path to sogo-backup.sh correctly
 30 0 * * * sogo /usr/share/doc/sogo-*/sogo-backup.sh
 ```
+
+
+### Build
+```
+docker build -t  stephdl/sogo:5.9.0 .
+docker push  stephdl/sogo:5.9.0
+```
