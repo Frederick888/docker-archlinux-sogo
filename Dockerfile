@@ -28,6 +28,9 @@ RUN chown -R build ./sogo
 WORKDIR /build/sogo
 RUN su -g wheel -c 'makepkg -is --noconfirm' - build && rm -rf /build/sogo && pacman -Sccq --noconfirm
 
+WORKDIR /
+RUN rmdir /build
+
 RUN sed 's/^Listen .*/Listen 20001/' -i /etc/httpd/conf/httpd.conf
 RUN sed 's|^ErrorLog.*|ErrorLog /dev/stderr|' -i /etc/httpd/conf/httpd.conf
 RUN sed 's/^#\(LoadModule .*\/mod_rewrite\.so\)/\1/' -i /etc/httpd/conf/httpd.conf
@@ -46,6 +49,5 @@ RUN mkdir /var/spool/sogo && chown sogo:sogo /var/spool/sogo
 COPY sogod.ini /etc/supervisor.d/sogod.ini
 COPY apache.ini /etc/supervisor.d/apache.ini
 
-WORKDIR /
 CMD ["/usr/sbin/supervisord", "--nodaemon"]
 EXPOSE 20000 20001
