@@ -2,7 +2,9 @@
 
 FROM archlinux:latest
 
-RUN pacman --noconfirm --needed -Syu && pacman --noconfirm --needed -S base-devel git supervisor apache zip inetutils libsodium libzip libytnef && pacman -Sccq --noconfirm
+RUN pacman --noconfirm --needed -Syu && \
+  pacman --noconfirm --needed -S base-devel git supervisor apache zip inetutils libsodium libzip libytnef cronie && \
+  pacman -Sccq --noconfirm
 # hadolint ignore=SC2016
 RUN sed 's/.*MAKEFLAGS=.*/MAKEFLAGS="-j$(nproc)"/' -i /etc/makepkg.conf
 RUN sed 's/^# \(%wheel.*NOPASSWD.*\)/\1/' -i /etc/sudoers
@@ -48,6 +50,10 @@ RUN mkdir /var/run/sogo && chown sogo:sogo /var/run/sogo
 RUN mkdir /var/spool/sogo && chown sogo:sogo /var/spool/sogo
 COPY sogod.ini /etc/supervisor.d/sogod.ini
 COPY apache.ini /etc/supervisor.d/apache.ini
+COPY cronie.ini /etc/supervisor.d/cronie.ini
+COPY crontab /etc/crontab
+RUN mkdir -p /usr/share/doc/sogo
+COPY sogo-backup.sh /usr/share/doc/sogo/sogo-backup.sh
 
 CMD ["/usr/sbin/supervisord", "--nodaemon"]
 EXPOSE 20000 20001
