@@ -16,19 +16,19 @@ WORKDIR /build
 RUN git clone --depth 1 https://aur.archlinux.org/libwbxml.git
 RUN chown -R build ./libwbxml
 WORKDIR /build/libwbxml
-RUN su -g wheel -c 'makepkg -is --noconfirm' - build && rm -rf /build/libwbxml && pacman -Sccq --noconfirm
+RUN su -g wheel -c 'makepkg -isr --noconfirm' - build && rm -rf /build/libwbxml && pacman -Sccq --noconfirm
 
 WORKDIR /build
 RUN git clone --depth 1 https://aur.archlinux.org/sope.git
 RUN chown -R build ./sope
 WORKDIR /build/sope
-RUN su -g wheel -c 'makepkg -is --noconfirm' - build && rm -rf /build/sope && pacman -Sccq --noconfirm
+RUN su -g wheel -c 'makepkg -isr --noconfirm' - build && rm -rf /build/sope && pacman -Sccq --noconfirm
 
 WORKDIR /build
 RUN git clone --depth 1 https://aur.archlinux.org/sogo.git
 RUN chown -R build ./sogo
 WORKDIR /build/sogo
-RUN su -g wheel -c 'makepkg -is --noconfirm' - build && rm -rf /build/sogo && pacman -Sccq --noconfirm
+RUN su -g wheel -c 'makepkg -isr --noconfirm' - build && rm -rf /build/sogo && pacman -Sccq --noconfirm
 
 WORKDIR /
 RUN rmdir /build
