@@ -33,27 +33,23 @@ RUN su -g wheel -c 'makepkg -isr --noconfirm' - build && rm -rf /build/sogo && p
 WORKDIR /
 RUN rmdir /build
 
-RUN sed 's/^Listen .*/Listen 20001/' -i /etc/httpd/conf/httpd.conf
-RUN sed 's|^ErrorLog.*|ErrorLog /dev/stderr|' -i /etc/httpd/conf/httpd.conf
-RUN sed 's/^#\(LoadModule .*\/mod_rewrite\.so\)/\1/' -i /etc/httpd/conf/httpd.conf
-RUN sed 's/^#\(LoadModule .*\/mod_proxy\.so\)/\1/' -i /etc/httpd/conf/httpd.conf
-RUN sed 's/^#\(LoadModule .*\/mod_proxy_http\.so\)/\1/' -i /etc/httpd/conf/httpd.conf
-RUN sed 's/^#\(LoadModule .*\/mod_proxy_http2\.so\)/\1/' -i /etc/httpd/conf/httpd.conf
-RUN sed 's/^#\(LoadModule .*\/mod_proxy_balancer\.so\)/\1/' -i /etc/httpd/conf/httpd.conf
-RUN sed 's/^#\(LoadModule .*\/mod_headers\.so\)/\1/' -i /etc/httpd/conf/httpd.conf
+RUN sed -e 's/^Listen .*/Listen 20001/' \
+  -e 's|^ErrorLog.*|ErrorLog /dev/stderr|' \
+  -e 's/^#\(LoadModule .*\/mod_rewrite\.so\)/\1/' \
+  -e 's/^#\(LoadModule .*\/mod_proxy\.so\)/\1/' \
+  -e 's/^#\(LoadModule .*\/mod_proxy_http\.so\)/\1/' \
+  -e 's/^#\(LoadModule .*\/mod_proxy_http2\.so\)/\1/' \
+  -e 's/^#\(LoadModule .*\/mod_proxy_balancer\.so\)/\1/' \
+  -e 's/^#\(LoadModule .*\/mod_headers\.so\)/\1/' \
+  -i /etc/httpd/conf/httpd.conf
 RUN printf 'Include conf/extra/SOGo.conf\n' >>/etc/httpd/conf/httpd.conf
 
-COPY event_listener.ini /etc/supervisor.d/event_listener.ini
-COPY event_listener.sh /usr/local/bin/event_listener.sh
-RUN chmod +x /usr/local/bin/event_listener.sh
-RUN mkdir /var/run/sogo && chown sogo:sogo /var/run/sogo
-RUN mkdir /var/spool/sogo && chown sogo:sogo /var/spool/sogo
-COPY sogod.ini /etc/supervisor.d/sogod.ini
-COPY apache.ini /etc/supervisor.d/apache.ini
-COPY cronie.ini /etc/supervisor.d/cronie.ini
+COPY event_listener.ini sogod.ini apache.ini cronie.ini /etc/supervisor.d/
+COPY --chmod=755 event_listener.sh /usr/local/bin/event_listener.sh
+RUN mkdir /var/run/sogo && chown sogo:sogo /var/run/sogo && \
+  mkdir /var/spool/sogo && chown sogo:sogo /var/spool/sogo
 COPY crontab /etc/crontab
-RUN mkdir -p /usr/share/doc/sogo
-COPY sogo-backup.sh /usr/share/doc/sogo/sogo-backup.sh
+COPY --chmod=755 sogo-backup.sh /usr/share/doc/sogo/sogo-backup.sh
 
 CMD ["/usr/sbin/supervisord", "--nodaemon"]
 EXPOSE 20000 20001
